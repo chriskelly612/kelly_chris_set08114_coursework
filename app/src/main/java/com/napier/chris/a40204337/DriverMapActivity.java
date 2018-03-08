@@ -13,6 +13,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.directions.route.AbstractRouting;
+import com.directions.route.Route;
+import com.directions.route.RouteException;
+import com.directions.route.Routing;
+import com.directions.route.RoutingListener;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.common.ConnectionResult;
@@ -27,6 +32,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -34,9 +41,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class DriverMapActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
+public class DriverMapActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener/*RoutingListener*/ {
 
     private GoogleMap mMap;
     GoogleApiClient mGoogleApiClient;
@@ -46,11 +54,13 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
     private String customerID = "";
     private boolean driverLoggingOut = false;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_map);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        //polylines = new ArrayList<>();
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
 
@@ -74,7 +84,9 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
                 FirebaseAuth.getInstance().signOut();
                 Intent intent = new Intent(DriverMapActivity.this, MainActivity.class);
                 startActivity(intent);
+                Toast.makeText(DriverMapActivity.this, "Logged Out Successfully", Toast.LENGTH_LONG).show();
                 finish();
+                return;
             }
         });
 
@@ -92,6 +104,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
 
                     getCustomerPickupLocation();
                     } else {
+                    //clearPolyLines();
                     customerID = "";
                     if (customerMarker != null) {
                         customerMarker.remove();
@@ -130,6 +143,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
                     }
                     LatLng driverLatLng = new LatLng(locationLat, locationLng);
                     customerMarker = mMap.addMarker(new MarkerOptions().position(driverLatLng).title("Your Customers Location").icon(BitmapDescriptorFactory.fromResource(R.mipmap.pickup_marker)));
+                    //getRouteToCust(driverLatLng);
                 }
                 }
 
@@ -140,6 +154,16 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
         });
 
     }
+
+    /*private void getRouteToCust(LatLng driverLatLng) {
+        Routing routing = new Routing.Builder()
+                .travelMode(AbstractRouting.TravelMode.DRIVING)
+                .withListener(this)
+                .alternativeRoutes(false)
+                .waypoints(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), driverLatLng)
+                .build();
+        routing.execute();
+    }*/
 
     /**
      * Manipulates the map once available.
@@ -271,4 +295,59 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
 
 
     }
-}
+
+    /*private List<Polyline> polylines;
+    private static final int[] COLORS = new int[]{R.color.primary_dark_material_light};
+
+    @Override
+    public void onRoutingFailure(RouteException e) {
+        if(e != null) {
+            Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }else {
+            Toast.makeText(this, "Something went wrong, Try again", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onRoutingStart() {
+
+    }
+
+    @Override
+    public void onRoutingSuccess(ArrayList<Route> route, int shortestRouteIndex) {
+        if(polylines.size()>0) {
+            for (Polyline poly : polylines) {
+                poly.remove();
+            }
+        }
+
+        polylines = new ArrayList<>();
+        //add route(s) to the map.
+        for (int i = 0; i <route.size(); i++) {
+
+            //In case of more than 5 alternative routes
+            int colorIndex = i % COLORS.length;
+
+            PolylineOptions polyOptions = new PolylineOptions();
+            polyOptions.color(getResources().getColor(COLORS[colorIndex]));
+            polyOptions.width(10 + i * 3);
+            polyOptions.addAll(route.get(i).getPoints());
+            Polyline polyline = mMap.addPolyline(polyOptions);
+            polylines.add(polyline);
+
+            Toast.makeText(getApplicationContext(),"Route "+ (i+1) +": distance - "+ route.get(i).getDistanceValue()+": duration - "+ route.get(i).getDurationValue(),Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    @Override
+    public void onRoutingCancelled() {
+    }
+        private void clearPolyLines(){
+            for (Polyline line : polylines) {
+                line.remove();
+            }
+            polylines.clear();
+        }*/
+
+    }

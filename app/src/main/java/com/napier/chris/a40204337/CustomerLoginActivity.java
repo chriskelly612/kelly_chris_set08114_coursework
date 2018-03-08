@@ -18,8 +18,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class CustomerLoginActivity extends AppCompatActivity {
-    private EditText mEmail, mPassword;
-    private Button mLogin, mRegistration;
+    //private EditText mEmail, mPassword;
+    //private Button mLogin, mRegistration;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
     @Override
@@ -36,6 +36,7 @@ public class CustomerLoginActivity extends AppCompatActivity {
                 if(user!=null){
                     Intent intent = new Intent(CustomerLoginActivity.this, CustomerMapActivity.class);
                     startActivity(intent);
+                    Toast.makeText(CustomerLoginActivity.this, "Logged In Successfully", Toast.LENGTH_LONG).show();
                     finish();
                     return;
                 }
@@ -77,7 +78,7 @@ public class CustomerLoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(!task.isSuccessful()){
-                            Toast.makeText(CustomerLoginActivity.this, "sign in error", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CustomerLoginActivity.this, "Sign In Error!", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

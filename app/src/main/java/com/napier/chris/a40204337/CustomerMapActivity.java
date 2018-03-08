@@ -78,6 +78,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                 FirebaseAuth.getInstance().signOut();
                 Intent intent = new Intent(CustomerMapActivity.this, MainActivity.class);
                 startActivity(intent);
+                Toast.makeText(CustomerMapActivity.this, "Logged Out Successfully", Toast.LENGTH_LONG).show();
                 finish();
                 return;
             }
