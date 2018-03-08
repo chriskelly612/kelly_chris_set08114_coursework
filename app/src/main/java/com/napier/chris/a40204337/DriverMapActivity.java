@@ -44,7 +44,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DriverMapActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener/*RoutingListener*/ {
+public class DriverMapActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener, RoutingListener {
 
     private GoogleMap mMap;
     GoogleApiClient mGoogleApiClient;
@@ -60,7 +60,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_map);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        //polylines = new ArrayList<>();
+        polylines = new ArrayList<>();
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
 
@@ -108,7 +108,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
                     customerID = "";
                     if (customerMarker != null) {
                         customerMarker.remove();
-                        Toast.makeText(DriverMapActivity.this, "YOUR PASSENGER HAS CANCELLED", Toast.LENGTH_LONG).show();
+                        //Toast.makeText(DriverMapActivity.this, "YOUR PASSENGER HAS CANCELLED", Toast.LENGTH_LONG).show();
                     }
                     if (CustPickupLocation != null) {
                         CustPickupLocation.removeEventListener(CustPickupLocationListener);
@@ -147,7 +147,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
                     LatLng customerLatLng = new LatLng(locationLat, locationLng);
                     customerMarker = mMap.addMarker(new MarkerOptions().position(customerLatLng).title("Your Customers Location").icon(BitmapDescriptorFactory.fromResource(R.mipmap.pickup_marker)));
 
-                    //getRouteToCust(driverLatLng);
+                    getRouteToCust(customerLatLng);
                 }
             }
 
@@ -159,15 +159,15 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
 
     }
 
-    /*private void getRouteToCust(LatLng driverLatLng) {
+    private void getRouteToCust(LatLng customerLatLng) {
         Routing routing = new Routing.Builder()
                 .travelMode(AbstractRouting.TravelMode.DRIVING)
                 .withListener(this)
                 .alternativeRoutes(false)
-                .waypoints(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), driverLatLng)
+                .waypoints(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), customerLatLng)
                 .build();
         routing.execute();
-    }*/
+    }
 
     /**
      * Manipulates the map once available.
@@ -212,13 +212,14 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
             mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
             mMap.animateCamera(CameraUpdateFactory.zoomTo(16));
 
-            /*String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-            DatabaseReference driverAvailable = FirebaseDatabase.getInstance().getReference("vacant");
-            DatabaseReference driverWorking = FirebaseDatabase.getInstance().getReference("working");
+            String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            DatabaseReference driverAvailable = FirebaseDatabase.getInstance().getReference("Working");
+            //DatabaseReference driverWorking = FirebaseDatabase.getInstance().getReference("working");
             GeoFire geoFireAvailable = new GeoFire(driverAvailable);
-            GeoFire geoFireWorking = new GeoFire(driverWorking);
+            //GeoFire geoFireWorking = new GeoFire(driverWorking);
+            geoFireAvailable.setLocation(userId, new GeoLocation(location.getLatitude(), location.getLongitude()));
 
-            switch (customerID) {
+            /*switch (customerID) {
                 case "":
                     geoFireWorking.removeLocation(userId);
                     geoFireAvailable.setLocation(userId, new GeoLocation(location.getLatitude(), location.getLongitude()));
@@ -265,7 +266,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
     private void logDriverOut() {
         LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("vacant");
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Working");
         GeoFire geoFire = new GeoFire(ref);
         geoFire.removeLocation(userId);
     }
@@ -300,7 +301,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
 
     }
 
-    /*private List<Polyline> polylines;
+    private List<Polyline> polylines;
     private static final int[] COLORS = new int[]{R.color.primary_dark_material_light};
 
     @Override
@@ -352,6 +353,6 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
                 line.remove();
             }
             polylines.clear();
-        }*/
+        }
 
     }

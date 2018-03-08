@@ -146,7 +146,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
     GeoQuery geoQuery;
 
     private void getDriver() {
-        DatabaseReference driver = FirebaseDatabase.getInstance().getReference().child("vacant");
+        DatabaseReference driver = FirebaseDatabase.getInstance().getReference().child("Working");
         GeoFire geoFire = new GeoFire(driver);
 
         geoQuery = geoFire.queryAtLocation(new GeoLocation(pickuplocation.latitude, pickuplocation.longitude), radius);
@@ -202,7 +202,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
     private ValueEventListener dLocationRefListener;
 
     private void getDriverLocation() {
-        dLocationRef = FirebaseDatabase.getInstance().getReference().child("vacant").child(dFoundID).child("l");
+        dLocationRef = FirebaseDatabase.getInstance().getReference().child("Working").child(dFoundID).child("l");
         dLocationRefListener = dLocationRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -236,8 +236,8 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                         mRequest.setText("Your Driver has Arrived!");
                     } else {
                         mRequest.setText("Driver Confirmed: " + String.valueOf(distance));
-                        Toast.makeText(CustomerMapActivity.this, "Click Again To Cancel", Toast.LENGTH_LONG).show();
                     }
+                    //Toast.makeText(CustomerMapActivity.this, "Click Again To Cancel", Toast.LENGTH_LONG).show();
                     driverMarker = mMap.addMarker(new MarkerOptions().position(driverLatLng).title("Your Drivers Location").icon(BitmapDescriptorFactory.fromResource(R.mipmap.car_driver)));
                 }
 
