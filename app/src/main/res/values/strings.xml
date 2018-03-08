@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">VeChain</string>
+    <string name="customer">Customer</string>
+    <string name="driver">Driver</string>
+    <string name="who">Who Are You?</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="title_activity_driver_map">Map</string>
+    <string name="logout">Logout</string>
+    <string name="request">Request Ride</string>
+</resources>
