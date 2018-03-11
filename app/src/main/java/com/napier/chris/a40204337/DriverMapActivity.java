@@ -50,7 +50,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
     GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
     LocationRequest mLocationRequest;
-    private Button mLogout;
+    private Button mLogout, mAccount;
     private String customerID = "";
     private boolean driverLoggingOut = false;
 
@@ -99,12 +99,14 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
         customerRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                //If there is a customer assigned to driver convert the ID to a string
                 if(dataSnapshot.exists()){
                     customerID = dataSnapshot.getValue().toString();
                     getCustomerPickupLocation();
 
                     } else {
                     //clearPolyLines();
+                    //Remove marker if theres no customer and remove location
                     customerID = "";
                     if (customerMarker != null) {
                         customerMarker.remove();
@@ -122,6 +124,16 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
             }
         });
 
+        mAccount = findViewById(R.id.account);
+        mAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(DriverMapActivity.this, DriverAccountActivity.class);
+                startActivity(intent);
+                return;
+            }
+        });
+
     }
     private Marker customerMarker;
     private DatabaseReference CustPickupLocation;
@@ -131,6 +143,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
         CustPickupLocationListener = CustPickupLocation.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                //If there is a request get the location of that customer
                 if (dataSnapshot.exists() && !customerID.equals("")) {
                     List<Object> map = (List<Object>) dataSnapshot.getValue();
                     double locationLat = 0;
@@ -145,6 +158,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
                         locationLng = Double.parseDouble(map.get(1).toString());
                     }
                     LatLng customerLatLng = new LatLng(locationLat, locationLng);
+                    //Add the marker for pickup
                     customerMarker = mMap.addMarker(new MarkerOptions().position(customerLatLng).title("Your Customers Location").icon(BitmapDescriptorFactory.fromResource(R.mipmap.pickup_marker)));
 
                     getRouteToCust(customerLatLng);
@@ -209,9 +223,12 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
             mLastLocation = location;
 
             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            //Move camera to location
             mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            //Set the zoom range on map
             mMap.animateCamera(CameraUpdateFactory.zoomTo(16));
 
+            //Get drivers ID and add it to the Working child in database
             String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
             DatabaseReference driverAvailable = FirebaseDatabase.getInstance().getReference("Working");
             //DatabaseReference driverWorking = FirebaseDatabase.getInstance().getReference("working");
@@ -264,6 +281,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
     }
 
     private void logDriverOut() {
+        //Remove driver ID from Working if they logout
         LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Working");
