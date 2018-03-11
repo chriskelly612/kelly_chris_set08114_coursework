@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Uber v2</string>
+    <string name="app_name">MyTaxiApp</string>
     <string name="customer">Customer</string>
     <string name="driver">Driver</string>
     <string name="who">Who Are You?</string>
