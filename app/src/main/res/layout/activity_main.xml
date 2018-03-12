@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="bottom"
-    android:background="@drawable/taxi3"
+    android:background="@drawable/taxi"
     tools:context="com.napier.chris.a40204337.MainActivity">
 
     <Button
