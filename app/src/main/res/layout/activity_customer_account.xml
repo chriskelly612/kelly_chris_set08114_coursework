@@ -15,7 +15,8 @@
         android:background="@color/cardview_light_background"
         android:layout_gravity="center"
         android:layout_marginBottom="20sp"
-        android:layout_marginTop="70sp" />
+        android:src="@drawable/icon"
+        android:layout_marginTop="70sp"/>
 
     <EditText
         android:id="@+id/name"

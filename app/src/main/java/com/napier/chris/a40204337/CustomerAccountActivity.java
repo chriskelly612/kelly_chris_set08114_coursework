@@ -35,17 +35,17 @@ public class CustomerAccountActivity extends AppCompatActivity {
 
     private EditText mTypedName, mTypedPhone;
     private Button mBack, mUpdate;
-    //private ImageView mProfileImage;
+    private ImageView mProfileImage;
 
     private FirebaseAuth mAuth;
     private DatabaseReference mCustomerDatabase;
-    //private Uri resultUri;
+    private Uri resultUri;
 
 
     private String userID;
     private String mName;
     private String mPhone;
-    //private String mProfileImageUrl;
+    private String mProfileImageUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +54,7 @@ public class CustomerAccountActivity extends AppCompatActivity {
 
         mTypedName = findViewById(R.id.name);
         mTypedPhone = findViewById(R.id.phone);
-        //mProfileImage = findViewById(R.id.picture);
+        mProfileImage = findViewById(R.id.picture);
 
 
         mBack = findViewById(R.id.back);
@@ -66,14 +66,14 @@ public class CustomerAccountActivity extends AppCompatActivity {
 
         addCustInfo();
 
-        /*mProfileImage.setOnClickListener(new View.OnClickListener() {
+        mProfileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_PICK);
                 intent.setType("image/*");
                 startActivityForResult(intent, 1);
             }
-        });*/
+        });
 
         mUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,10 +108,10 @@ public class CustomerAccountActivity extends AppCompatActivity {
                         mPhone = map.get("phone").toString();
                         mTypedPhone.setText(mPhone);
                     }
-                    /*if (map.get("profileImageUrl") != null) {
+                    if (map.get("profileImageUrl") != null) {
                         mProfileImageUrl = map.get("profileImageUrl").toString();
                         //Glide.with(getApplication()).load(mProfileImageUrl).into(mProfileImage);
-                    }*/
+                    }
                 }
             }
 
@@ -134,7 +134,7 @@ public class CustomerAccountActivity extends AppCompatActivity {
         custInfo.put("phone", mPhone);
         mCustomerDatabase.updateChildren(custInfo);
 
-        /*if (resultUri != null) {
+        if (resultUri != null) {
 
             StorageReference filePath = FirebaseStorage.getInstance().getReference().child("users-images").child(userID);
             Bitmap bitmap = null;
@@ -181,7 +181,7 @@ public class CustomerAccountActivity extends AppCompatActivity {
             final Uri imageUri = data.getData();
             resultUri = imageUri;
             mProfileImage.setImageURI(resultUri);
-        }*/
+        }
     }
 }
 
