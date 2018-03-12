@@ -34,7 +34,6 @@ public class CustomerLoginActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 if(user!=null){
-                    //If The user logs in successfully take them to appropriate page with Map
                     Intent intent = new Intent(CustomerLoginActivity.this, CustomerMapActivity.class);
                     startActivity(intent);
                     Toast.makeText(CustomerLoginActivity.this, "Logged In Successfully", Toast.LENGTH_LONG).show();
@@ -43,28 +42,24 @@ public class CustomerLoginActivity extends AppCompatActivity {
                 }
             }
         };
-        //Finds the text boxes
+
         final EditText mEmail = findViewById(R.id.email);
         final EditText mPassword = findViewById(R.id.password);
 
-        //Finds the buttons
         Button mLogin = findViewById(R.id.login);
         Button mRegistration = findViewById(R.id.register);
 
         mRegistration.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Converts input to string
                 final String email = mEmail.getText().toString();
                 final String password = mPassword.getText().toString();
                 mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(CustomerLoginActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(!task.isSuccessful()){
-                            //Creates an alert if registration is not a success
                             Toast.makeText(CustomerLoginActivity.this, "sign up error", Toast.LENGTH_SHORT).show();
                         }else{
-                            //Adds details to database if successful
                             String user_id = mAuth.getCurrentUser().getUid();
                             DatabaseReference current_user_db = FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(user_id);
                             current_user_db.setValue(true);

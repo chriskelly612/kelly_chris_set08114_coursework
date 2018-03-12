@@ -48,7 +48,9 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
     LocationRequest mLocationRequest;
     private Button mLogout, mRequest, mAccount;
     private LatLng pickuplocation;
+
     private Boolean requestBoolean = false;
+
     private Marker PickupMarker;
 
     @Override
@@ -69,6 +71,8 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
 
         mLogout = findViewById(R.id.logout);
         mRequest = findViewById(R.id.request);
+        mAccount = findViewById(R.id.account);
+
 
         mLogout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,7 +141,6 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
             }
         });
 
-        mAccount = findViewById(R.id.account);
         mAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -163,7 +166,6 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
             public void onKeyEntered(String key, GeoLocation location) {
-                //if driver is found for customer add the customers ID to their child in database
                 if (!dFound /*&& requestBoolean*/) {
                     dFound = true;
                     dFoundID = key;
@@ -192,7 +194,6 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
 
             @Override
             public void onGeoQueryReady() {
-                //if driver not found in the radius expand it until one is found
                 if (!dFound) {
                     radius++;
                     getDriver();
@@ -221,8 +222,6 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                     double locationLat = 0;
                     double locationLng = 0;
                     mRequest.setText("Finding Driver Location...");
-
-                    //Convert drivers location to a string
                     if (map.get(0) != null) {
                         locationLat = Double.parseDouble(map.get(0).toString());
                     }
@@ -245,12 +244,10 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                     float distance = point1.distanceTo(point2);
 
                     if (distance < 100) {
-                        //if distance is less than 100m create update customer
                         mRequest.setText("Your Driver has Arrived!");
                     } else {
                         mRequest.setText("Driver Confirmed: " + String.valueOf(distance));
                     }
-                    //Toast.makeText(CustomerMapActivity.this, "Click Again To Cancel", Toast.LENGTH_LONG).show();
                     driverMarker = mMap.addMarker(new MarkerOptions().position(driverLatLng).title("Your Drivers Location").icon(BitmapDescriptorFactory.fromResource(R.mipmap.car_driver)));
                 }
 

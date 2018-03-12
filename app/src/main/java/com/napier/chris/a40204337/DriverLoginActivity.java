@@ -34,7 +34,6 @@ public class DriverLoginActivity extends AppCompatActivity {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                //If The user logs in successfully take them to appropriate page with Map
                 if (user != null) {
                     Intent intent = new Intent(DriverLoginActivity.this, DriverMapActivity.class);
                     startActivity(intent);
@@ -42,29 +41,25 @@ public class DriverLoginActivity extends AppCompatActivity {
                 }
             }
         };
-        //Finds the text boxes
+
         mEmail = findViewById(R.id.email);
         mPassword = findViewById(R.id.password);
 
-        //Finds buttons
         mLogin = findViewById(R.id.login);
         mRegistration = findViewById(R.id.register);
 
         mRegistration.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Converts input to string
                 final String email = mEmail.getText().toString();
                 final String password = mPassword.getText().toString();
                 mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(DriverLoginActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (!task.isSuccessful()) {
-                            //Creates an alert if registration is not a success
                             Toast.makeText(DriverLoginActivity.this, "sign up error", Toast.LENGTH_SHORT).show();
                         } else {
                             String user_id = mAuth.getCurrentUser().getUid();
-                            //Adds details to database if successful
                             DatabaseReference current_user_db = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(user_id);
                             current_user_db.setValue(true);
                         }

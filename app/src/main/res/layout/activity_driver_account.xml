@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.napier.chris.a40204337.DriverAccountActivity"
+    tools:context="com.napier.chris.a40204337.CustomerAccountActivity"
     android:background="@drawable/taxi"
     android:orientation="vertical">
 
@@ -13,11 +13,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Name"
-        android:layout_marginTop="140dp"
         android:layout_marginBottom="4sp"
         android:background="@color/cardview_light_background"
         android:padding="10sp"
-        android:textAlignment="center"/>
+        android:textAlignment="center"
+        android:layout_marginTop="170sp"/>
 
     <EditText
         android:id="@+id/phone"
@@ -34,13 +34,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/update"
-        android:text="Update"/>
+        android:text="@string/update"/>
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/back"
-        android:text="back"/>
+        android:text="@string/back"/>
 
 
 </LinearLayout>
+

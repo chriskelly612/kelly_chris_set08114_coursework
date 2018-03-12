@@ -25,14 +25,15 @@
             android:layout_height="wrap_content"
             android:text="@string/logout" />
 
-            <Button
-                android:id="@+id/account"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/account" />
+         <Button
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:id="@+id/account"
+             android:text="@string/account"/>
 
         </LinearLayout>
     </RelativeLayout>
+
 
     <Button
         android:layout_gravity="bottom"
@@ -40,7 +41,5 @@
         android:layout_height="wrap_content"
         android:text="@string/request"
         android:id="@+id/request"/>
-
-
 
 </FrameLayout>
