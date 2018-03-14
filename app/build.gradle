@@ -39,6 +39,7 @@ dependencies {
     compile 'com.github.dimorinny:floating-text-button:0.0.4'
     compile 'com.github.medyo:fancybuttons:1.8.4'
     compile 'com.github.jd-alexander:library:1.1.0'
+    compile 'com.google.android.gms:play-services-places:11.8.0'
 }
 
 
