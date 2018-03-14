@@ -83,6 +83,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
         mLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //logs customer out if they click logout and returns to login screen
                 FirebaseAuth.getInstance().signOut();
                 Intent intent = new Intent(CustomerMapActivity.this, MainActivity.class);
                 startActivity(intent);
@@ -112,6 +113,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                     }
 
                     if (dFoundID != null) {
+                        //if there is no driver assigned set its child to true and remove its children
                         DatabaseReference driverlocation = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(dFoundID);
                         driverlocation.setValue(true);
                         dFoundID = null;
@@ -129,11 +131,13 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                     if (driverMarker != null) {
                         driverMarker.remove();
                     }
+                    //if cancelled return text to request ride and alert customer they have cancelled
                     mRequest.setText("Request Ride");
                     Toast.makeText(CustomerMapActivity.this, "YOUR RIDE HAS BEEN CANCELLED", Toast.LENGTH_LONG).show();
 
 
                 } else {
+                    //if requested add the request to database and add location. add a pickup marker to show pickup location
                     requestBoolean = true;
                     String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
                     DatabaseReference ref = FirebaseDatabase.getInstance().getReference("requests");
@@ -159,11 +163,6 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
             }
         });
 
-
-
-
-
-
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
 
@@ -181,14 +180,6 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
 
             }
         });
-
-
-
-
-
-
-
-
 }
 
     private Boolean dFound = false;
@@ -206,7 +197,8 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
             public void onKeyEntered(String key, GeoLocation location) {
-                if (!dFound /*&& requestBoolean*/) {
+                //if driver found add customers id and destination to drivers child
+                if (!dFound) {
                     dFound = true;
                     dFoundID = key;
 
@@ -235,11 +227,11 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
 
             @Override
             public void onGeoQueryReady() {
+                //if a driver isnt found in radius, increase it and search again until one is found
                 if (!dFound) {
                     radius++;
                     getDriver();
                 }
-
             }
 
             @Override
@@ -258,7 +250,8 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
         dLocationRefListener = dLocationRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists() /*&& requestBoolean*/) {
+                if (dataSnapshot.exists()) {
+                    //get drivers location
                     List<Object> map = (List<Object>) dataSnapshot.getValue();
                     double locationLat = 0;
                     double locationLng = 0;
@@ -285,6 +278,7 @@ public class CustomerMapActivity extends FragmentActivity implements OnMapReadyC
                     float distance = point1.distanceTo(point2);
 
                     if (distance < 100) {
+                        //if distance is less than 100m alert customer
                         mRequest.setText("Your Driver has Arrived!");
                     } else {
                         mRequest.setText("Driver Confirmed: " + String.valueOf(distance));

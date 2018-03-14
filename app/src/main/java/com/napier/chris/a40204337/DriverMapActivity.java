@@ -84,6 +84,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
                 driverLoggingOut = true;
                 logDriverOut();
 
+                //If driver clicks log out take them back to login screen
                 FirebaseAuth.getInstance().signOut();
                 Intent intent = new Intent(DriverMapActivity.this, MainActivity.class);
                 startActivity(intent);
@@ -103,11 +104,13 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()){
+                    //convert customers id to a string if there is one
                     customerID = dataSnapshot.getValue().toString();
 
                     getCustomerPickupLocation();
                     getDestination();
                     } else {
+                    //if there is not remove all data associated with the ride
                     clearPolyLines();
                     customerID = "";
                     if (customerMarker != null) {
@@ -142,6 +145,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
     private ValueEventListener CustPickupLocationListener;
 
     private void getCustomerPickupLocation() {
+        //gets customers location
         CustPickupLocation = FirebaseDatabase.getInstance().getReference().child("requests").child(customerID).child("l");
         CustPickupLocationListener = CustPickupLocation.addValueEventListener(new ValueEventListener() {
             @Override
@@ -157,6 +161,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
                     if (map.get(1) != null) {
                         locationLng = Double.parseDouble(map.get(1).toString());
                     }
+                    //sets customer location and adds it to map
                     LatLng customerLatLng = new LatLng(locationLat, locationLng);
                     customerMarker = mMap.addMarker(new MarkerOptions().position(customerLatLng).title("Your Customers Location").icon(BitmapDescriptorFactory.fromResource(R.mipmap.pickup_marker)));
                     getRouteToCust(customerLatLng);
@@ -172,6 +177,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
     }
 
     private void getDestination() {
+        //Gets customers typed destination to a string and displays it on drivers screen
         mDestination.setVisibility(View.VISIBLE);
         String driversId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference CustomerRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(driversId).child("CustomerRequest").child("Destination");
@@ -182,7 +188,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
                     String destination = dataSnapshot.getValue().toString();
                     mDestination.setText("Destination: " + destination);
                 } else {
-                    mDestination.setText("Destination: ");
+                    mDestination.setText("Destination: Not Specified");
 
                 }
             }
@@ -195,6 +201,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
     }
 
     private void getRouteToCust(LatLng driverLatLng) {
+        //sets route planner to driving mode
         Routing routing = new Routing.Builder()
                 .travelMode(AbstractRouting.TravelMode.DRIVING)
                 .withListener(this)

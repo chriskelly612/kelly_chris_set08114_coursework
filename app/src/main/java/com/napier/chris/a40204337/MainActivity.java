@@ -8,7 +8,7 @@ import android.content.Intent;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
-    private Button mDriver, mCustomer;
+    //private Button mDriver, mCustomer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -17,7 +17,6 @@ public class MainActivity extends AppCompatActivity {
         Button mDriver = findViewById(R.id.driver);
         Button mCustomer = findViewById(R.id.customer);
 
-        //startService(new Intent(MainActivity.this, onAppKilled.class));
         mDriver.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
